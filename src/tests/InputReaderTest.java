@@ -1,6 +1,6 @@
 package tests;
 
-
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import classes.InputReader;
@@ -19,6 +19,8 @@ class InputReaderTest {
                 "tf1-1.txt"
         };
         
+        Arrays.sort(expectedFiles);
+
         assertEquals(expectedFiles.length, reader.inputFiles.length);
         for (int i = 0; i < expectedFiles.length; i++) {
             assertEquals(expectedFiles[i], reader.inputFiles[i].getName());
