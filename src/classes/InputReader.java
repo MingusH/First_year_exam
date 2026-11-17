@@ -5,41 +5,36 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
-
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
 
 public class InputReader {
-    private String inputFilesPath;
-    public File[] inputFiles;
-    private HashMap<String, Program> map;
+    private File inputFile;
+    private Program p;
+    private World world;
 
 
-    public InputReader(String inputFilesPath) {
-        this.inputFilesPath = inputFilesPath;
-        File folder = new File(inputFilesPath);
-        this.inputFiles = folder.listFiles();
-        this.map = new HashMap<>();
+    public InputReader(File file) {
+        this.inputFile = file;
 
-        if (this.inputFiles == null) {
-            throw new IllegalArgumentException("Not a folder: " + inputFilesPath);
+        try (Scanner s = new Scanner(file)){
+            this.p = new Program(s.nextInt(), 800, 1000);
+            this.world = p.getWorld();
+        } catch (FileNotFoundException e){
+            System.out.println("no such file: " + file.getName());
         }
-        Arrays.sort(this.inputFiles, Comparator.comparing(File::getName));
-
     }
 
-    public HashMap<String, Program> build(File file){    
-        try (Scanner s = new Scanner(file)){
-            map.put(file.getName(), new Program(s.nextInt(), 800, 1000));
-            World world = map.get(file.getName()).getWorld();
+    public void build(){    
+        try (Scanner s = new Scanner(inputFile)){
+            s.nextLine();
+
             while (s.hasNext()){
+
                 String object = s.next();
                 String amountStr = s.next();
                 int amount = intervalHandler(amountStr);
@@ -47,24 +42,24 @@ public class InputReader {
                 switch(object){
                     case "grass":{
                         for (int i = 0; i < amount; i++){
-                            Location l = randomLocation(file.getName(), world, true);
+                            Location l = randomLocation(true);
                             world.setTile(l, new Grass());
                         }
-                        break;
                     } default: {
                         System.out.println("hoy");
                     }
                 }
             }
         } catch (FileNotFoundException e){
-            System.out.println("File not found " + file.getName());
+            System.out.println("File not found " + inputFile.getName());
         }
-        return map;
+
+        setDisplayInformations();
     }
 
-    public Location randomLocation(String filename, World world, Boolean isNonBlocking){
+    public Location randomLocation(Boolean isNonBlocking){
         Random r = new Random();
-        int size = map.get(filename).getSize();
+        int size = p.getSize();
         int x =  r.nextInt(size);
         int y = r.nextInt(size);
 
@@ -88,12 +83,10 @@ public class InputReader {
         return l;
     }
 
-    public void setDisplayInformations(){
+    private void setDisplayInformations(){
         DisplayInformation gdi = new DisplayInformation(Color.GREEN, "grass");
 
-        for (String key: map.keySet()){
-            map.get(key).setDisplayInformation(Grass.class, gdi);
-        }
+        p.setDisplayInformation(Grass.class, gdi);
     }
 
     public int intervalHandler(String input){
@@ -108,5 +101,17 @@ public class InputReader {
             amount = Integer.parseInt(input); //Laver amountString om til en integer
         }
         return amount;
+    }
+
+    public Program getProgram(){
+        return p;
+    }
+
+    public World getWorld(){
+        return world;
+    }
+
+    public File getFile(){
+        return inputFile;
     }
 }

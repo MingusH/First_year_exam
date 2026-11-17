@@ -1,17 +1,15 @@
 import classes.InputReader;
 import itumulator.executable.Program;
-import java.util.HashMap;
+import java.io.File;
 
 public class Main {
 
     public static void main(String[] args) {
-        String filePath = "input/week-1";
-        InputReader inputReader = new InputReader(filePath);
-        
-        HashMap<String, Program> programs = inputReader.build(inputReader.inputFiles[0]);
-        inputReader.setDisplayInformations();
+        File inputFile = new File("input/week-1/t1-1a.txt");
+        InputReader inputReader = new InputReader(inputFile);
+        inputReader.build();
 
-        Program p = programs.get("t1-1a.txt");
+        Program p = inputReader.getProgram();
         p.show();
 
         
