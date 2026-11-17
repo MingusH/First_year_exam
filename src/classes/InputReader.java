@@ -5,6 +5,7 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,24 +37,27 @@ public class InputReader {
 
     public HashMap<String, Program> build(File file){    
         try (Scanner s = new Scanner(file)){
-            map.put(file.getName(), new Program(s.nextInt(), 800, 75));
+            map.put(file.getName(), new Program(s.nextInt(), 800, 1000));
             World world = map.get(file.getName()).getWorld();
             while (s.hasNext()){
-                String[] line = s.nextLine().split(" ");
-                String object = line[0];
-                //String amount = line[1];
+                String object = s.next();
+                String amountStr = s.next();
+                int amount = intervalHandler(amountStr);
 
                 switch(object){
                     case "grass":{
-                        Location l = randomLocation(file.getName(), world, true);
-                        world.setTile(l, new Grass());
+                        for (int i = 0; i < amount; i++){
+                            Location l = randomLocation(file.getName(), world, true);
+                            world.setTile(l, new Grass());
+                        }
+                        break;
                     } default: {
                         System.out.println("hoy");
                     }
                 }
             }
         } catch (FileNotFoundException e){
-            System.out.println("File not found" + file.getName());
+            System.out.println("File not found " + file.getName());
         }
         return map;
     }
@@ -85,10 +89,24 @@ public class InputReader {
     }
 
     public void setDisplayInformations(){
-        DisplayInformation gdi = new DisplayInformation(Color.GREEN, "grass.png");
+        DisplayInformation gdi = new DisplayInformation(Color.GREEN, "grass");
 
         for (String key: map.keySet()){
             map.get(key).setDisplayInformation(Grass.class, gdi);
         }
+    }
+
+    public int intervalHandler(String input){
+        int amount;
+        if(input.contains("-")){
+            Random r = new Random();
+            int min = Integer.parseInt(input.substring(0, input.indexOf("-"))); //Laver min værdien om til en integer
+            int max = 1 + Integer.parseInt(input.substring(1 + input.indexOf("-"))); //Laver max værdien om til en integer
+
+            amount = r.nextInt(min, max); //Finder en tilfældig integer i intervallet
+        } else {
+            amount = Integer.parseInt(input); //Laver amountString om til en integer
+        }
+        return amount;
     }
 }
