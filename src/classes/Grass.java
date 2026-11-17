@@ -16,17 +16,21 @@ public class Grass implements NonBlocking, Actor {
     public void act(World world) {
 
         // SPREADING OF GRASS
-        Set<Location> neighbors = world.getEmptySurroundingTiles();
 
-        if (neighbors.size() == 0) {
-            return; // Afslutter act hvis der ikke er nogen ledige felter
+        Random r = new Random();
+        if (r.nextBoolean()) {
+            Set<Location> neighbors = world.getEmptySurroundingTiles();
+
+            if (neighbors.size() == 0) {
+                return; // Afslutter act hvis der ikke er nogen ledige felter
+            }
+
+            List<Location> list = new ArrayList<>(neighbors); // laver en Liste af dem
+
+            Location randomLocation = list.get(r.nextInt(list.size()));
+
+            world.setTile(randomLocation, new Grass());
         }
-
-        List<Location> list = new ArrayList<>(neighbors); // laver en Liste af dem
-
-        Location randomLocation = list.get(new Random().nextInt(list.size()));
-
-        world.setTile(randomLocation, this);
 
     }
 
