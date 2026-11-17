@@ -1,22 +1,21 @@
-import java.awt.Color;
-
-import itumulator.executable.DisplayInformation;
+import classes.InputReader;
 import itumulator.executable.Program;
-import itumulator.world.Location;
-import itumulator.world.World;
+import java.util.HashMap;
 
 public class Main {
 
     public static void main(String[] args) {
-        int size = 5;
-        Program p = new Program(size, 800, 75);
+        String filePath = "input/week-1";
+        InputReader inputReader = new InputReader(filePath);
 
-        World w = p.getWorld();
+        inputReader.setDisplayInformations();
+
+        HashMap<String, Program> programs = inputReader.buildAll();
 
         // w.setTile(new Location(0, 0), new <MyClass>());
 
         // p.setDisplayInformation(<MyClass>.class, new DisplayInformation(<Color>, "<ImageName>"));
 
-        p.show();
+        programs.get("t1-1a.txt").show();
     }
 }

@@ -25,4 +25,13 @@ class InputReaderTest {
             assertEquals(expectedFiles[i], reader.inputFiles[i].getName());
         }
     }
+
+    @Test
+    void testInputReaderBuilder(){
+        String testFilePath = "input/week-1";
+        InputReader reader = new InputReader(testFilePath);
+        Object[] obj = reader.build();
+        Object[] expectedObjects;
+        assertEquals(obj, expectedObjects);
+    }
 }
