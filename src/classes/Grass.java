@@ -1,14 +1,13 @@
 package classes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Random;
-
 import itumulator.simulator.Actor;
+import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
-import itumulator.world.Location;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class Grass implements NonBlocking, Actor {
 
@@ -19,19 +18,21 @@ public class Grass implements NonBlocking, Actor {
 
         Random r = new Random();
         if (r.nextBoolean()) {
-            Set<Location> neighbors = world.getEmptySurroundingTiles();
+            List<Location> empty_neighbors = new ArrayList();
+            Set<Location> neighbors = world.getSurroundingTiles();
+            for (Location l: neighbors){
+                if (!world.containsNonBlocking(l)){
+                    empty_neighbors.add(l);
+                }
+            }
 
-            if (neighbors.size() == 0) {
+            if (empty_neighbors.size() == 0) {
                 return; // Afslutter act hvis der ikke er nogen ledige felter
             }
 
-            List<Location> list = new ArrayList<>(neighbors); // laver en Liste af dem
-
-            Location randomLocation = list.get(r.nextInt(list.size()));
+            Location randomLocation = empty_neighbors.get(r.nextInt(empty_neighbors.size()));
 
             world.setTile(randomLocation, new Grass());
         }
-
     }
-
 }
