@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
+import classes.Rabbit;
 
 
 public class InputReader {
@@ -45,6 +46,14 @@ public class InputReader {
                             Location l = randomLocation(true);
                             world.setTile(l, new Grass());
                         }
+                        break;
+                    }
+                    case "rabbit":{
+                        for (int i = 0; i < amount; i++){
+                            Location l = randomLocation(false);
+                            world.setTile(l, new Rabbit());
+                        }
+                        break;
                     } default: {
                         System.out.println("hoy");
                     }
@@ -85,8 +94,10 @@ public class InputReader {
 
     private void setDisplayInformations(){
         DisplayInformation gdi = new DisplayInformation(Color.GREEN, "grass");
+        DisplayInformation rdi = new DisplayInformation(Color.WHITE, "rabbit-small");
 
         p.setDisplayInformation(Grass.class, gdi);
+        p.setDisplayInformation(Rabbit.class, rdi);
     }
 
     public int intervalHandler(String input){

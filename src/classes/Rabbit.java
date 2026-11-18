@@ -10,36 +10,34 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Rabbit implements Actor {
+    Boolean hasEaten;
+    int age;
+    //Hole hole;
+    int energy;
+    Location l;
+
+    public Rabbit(){
+        this.age = 0;
+        this.hasEaten = false;
+        this.energy = 20;
+    }
+    
     @Override 
     public void act(World world) {
-        Boolean hasEaten = false;
-        Location l = world.getLocation(this);
-        //Location holeLocation; //skal instansieres 
+        l = world.getLocation(this);
 
-        if(world.getNonBlocking(l) instanceof Grass){ //Tjekker om der er grass den kan spise.
-            Object eatenGrass = world.getTile(l);
-            world.delete(eatenGrass);
-            hasEaten = true;
+        if(world.getCurrentTime() >= 0 && world.getCurrentTime() <= 7){ //Hvis det er morgen eller eftermiddag, så går kaninen rundt
+            eat(world);
+            move(world);
+        } else if (world.getCurrentTime() > 7 && world.isDay()){
+            System.out.println("ehj");
         }
-        if(world.getCurrentTime() <= 0 && world.getCurrentTime() >= 7){ //Hvis det er morgen eller eftermiddag, så går kaninen rundt
-            Set<Location> neighbours = world.getEmptySurroundingTiles();
-            List<Location> list = new ArrayList<>(neighbours);
-            Random random = new Random();
-            if(list.size()<0){
-                l = list.get(random.nextInt(list.size())); // Vælger et tilfældigt tomt felt omkring kaninen
-                world.move(this,l);
-            }
-        }
+
+
             
-        
-        
-        
-        
         if(world.isNight()){ // Tjekker om det er nat
             //Kaninen skal sove
         }
-        
-        
 
         if(!hasEaten && world.isNight()){
             die(world);
@@ -50,9 +48,12 @@ public class Rabbit implements Actor {
         world.delete(this);
     }
 
-    public void eat(Grass grass) {
-        // Implement the logic for the rabbit eating grass
-        // This could involve removing the grass from the world and increasing the rabbit's energy or health.
+    public void eat(World world) {
+        if(world.getNonBlocking(l) instanceof Grass){ //Tjekker om der er grass den kan spise.
+            Object eatenGrass = world.getNonBlocking(l);
+            world.delete(eatenGrass);
+            hasEaten = true;
+        }
     }
 
     public void age() {
@@ -70,10 +71,14 @@ public class Rabbit implements Actor {
         // This could involve creating a new Hole instance and adding it to the world.
     }
 
-    public void move(Location newLocation) {
-        // Implement the logic for moving the rabbit to a new location
-        // This could involve checking if the new location is valid and updating the rabbit's position in the world.
+    public void move(World world) {
+        Set<Location> neighbours = world.getEmptySurroundingTiles();
+        List<Location> list = new ArrayList<>(neighbours);
+        Random random = new Random();
+
+        if(list.size()>0){
+            l = list.get(random.nextInt(list.size())); // Vælger et tilfældigt tomt felt omkring kaninen
+            world.move(this,l);
+        }
     }
-
-
 }
