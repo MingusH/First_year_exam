@@ -72,7 +72,7 @@ public class Rabbit implements Actor {
     }
 
     public void move(World world) {
-        Set<Location> neighbours = world.getEmptySurroundingTiles();
+        Set<Location> neighbours = world.getEmptySurroundingTiles(l);
         List<Location> list = new ArrayList<>(neighbours);
         Random random = new Random();
 

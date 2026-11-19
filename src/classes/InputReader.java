@@ -93,9 +93,11 @@ public class InputReader {
     private void setDisplayInformations(){
         DisplayInformation gdi = new DisplayInformation(Color.GREEN, "grass");
         DisplayInformation rdi = new DisplayInformation(Color.WHITE, "rabbit-small");
+        DisplayInformation bdi = new DisplayInformation(Color.BLACK, "hole-small");
 
         p.setDisplayInformation(Grass.class, gdi);
         p.setDisplayInformation(Rabbit.class, rdi);
+        p.setDisplayInformation(Burrow.class, bdi);
     }
 
     public int intervalHandler(String input){
