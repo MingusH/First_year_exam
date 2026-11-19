@@ -24,7 +24,7 @@ public class Rabbit implements Actor {
         this.age = 0;
         this.maxEnergy = 30;
         this.energy = 30;
-        this.energyGained = 15;
+        this.energyGained = 10;
     }
     
     @Override 
@@ -63,8 +63,8 @@ public class Rabbit implements Actor {
     public void age(){ //Age & energy system
         this.age++;
         this.energy--;
-        if(age % 20*5 == 0);{//Hver femte dag
-            this.maxEnergy--;
+        if(age % 20 == 0){//Hver femte dag
+            this.maxEnergy = this.maxEnergy - 5;
         } 
     }
 
@@ -76,12 +76,14 @@ public class Rabbit implements Actor {
         if(world.getNonBlocking(l) instanceof Grass){ //Tjekker om der er grass den kan spise.
             Object eatenGrass = world.getNonBlocking(l);
             world.delete(eatenGrass);
+            System.out.println(maxEnergy);
+            System.out.println(energy);
             if(energy < maxEnergy){ //Ændrer energiniveau for at spise.
                 if(this.maxEnergy - this.energy > this.energyGained){
                     this.energy = this.energy + this.energyGained;
                 } else {
                     this.energy = this.maxEnergy;
-                }
+                } 
             }
         }
     }
