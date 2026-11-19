@@ -90,21 +90,26 @@ public class Rabbit implements Actor {
     public void moveToBurrow(World world, Location burrowLocation){
         Location l = world.getLocation(this);
         System.out.println(burrowLocation);
-        if(l == burrowLocation){ //hvis kaninen allerede står på sit hul.
+        if(l.equals(burrowLocation)){ //hvis kaninen allerede står på sit hul.
             //Call enter burrow method
+            return;
         }
 
         //Bevægelse mod sit hul
         ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(l));
-        
-        double shortestDistance = Integer.MAX_VALUE;
-        Location closestLocation = l ;
+
+        double shortestDistance = Math.hypot(burrowLocation.getX() - l.getX(), burrowLocation.getY() - l.getY());
+        Location closestLocation = l;
         for(Location loc : neighbours){
-            if(shortestDistance > Math.sqrt(Math.pow(burrowLocation.getX() - loc.getX(), 2) + Math.pow(burrowLocation.getY() - loc.getY(), 2))){
+            double distance = Math.hypot(burrowLocation.getX() - loc.getX(), burrowLocation.getY() - loc.getY());
+            if(distance < shortestDistance){
+                shortestDistance = distance;
                 closestLocation = loc;
             }
         }
-        world.move(this,closestLocation);
+        if(!closestLocation.equals(l)){
+            world.move(this,closestLocation);
+        }
     }
     
 
