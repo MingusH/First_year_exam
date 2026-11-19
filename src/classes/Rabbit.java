@@ -95,14 +95,13 @@ public class Rabbit implements Actor {
         }
 
         //Bevægelse mod sit hul
-        Set<Location> neighbours = world.getEmptySurroundingTiles(l);
-        List<Location> list = new ArrayList<>(neighbours);
+        ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(l));
         
         double shortestDistance = Integer.MAX_VALUE;
         Location closestLocation = l ;
-        for(Location index : list){
-            if(shortestDistance > Math.sqrt((index.getX() - burrowLocation.getX())^2 + (index.getY() - burrowLocation.getY())^2)){
-                closestLocation = index;
+        for(Location loc : neighbours){
+            if(shortestDistance > Math.sqrt(Math.pow(burrowLocation.getX() - loc.getX(), 2) + Math.pow(burrowLocation.getY() - loc.getY(), 2))){
+                closestLocation = loc;
             }
         }
         world.move(this,closestLocation);
