@@ -12,11 +12,13 @@ import java.util.Random;
 
 public class Burrow implements NonBlocking, Actor{
     ArrayList<Rabbit> rabbits;
+    ArrayList<Rabbit> currentRabbits;
     int maxSize;
     int timeEmpty;
 
     public Burrow(){
         this.rabbits = new ArrayList<>();
+        this.currentRabbits = new ArrayList<>();
         this.maxSize = 4;
         this.timeEmpty = 0;
     }
@@ -38,7 +40,7 @@ public class Burrow implements NonBlocking, Actor{
         for (Location tile: set){
             if (world.getTile(tile) instanceof Rabbit r){
                 if (rabbits.contains(r)){
-                    rabbits.add(r);
+                    currentRabbits.add(r);
                     world.remove(r);
                 }
             }
@@ -48,9 +50,10 @@ public class Burrow implements NonBlocking, Actor{
     void releaseRabbits(World world){
         Random r = new Random();
         ArrayList<Location> lst = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
-        for (Rabbit rabbit: rabbits){
+        for (Rabbit rabbit: currentRabbits){
             world.setTile(lst.get(r.nextInt(lst.size())), rabbit);
         }
+        currentRabbits.clear();
     }
 
     Location getLocation(World world){

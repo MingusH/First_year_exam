@@ -5,7 +5,7 @@ import java.io.File;
 public class Main {
 
     public static void main(String[] args) {
-        File inputFile = new File("input/week-1/t1-3b.txt");
+        File inputFile = new File("input/week-1/tf1-1.txt");
         InputReader inputReader = new InputReader(inputFile);
         inputReader.build();
 

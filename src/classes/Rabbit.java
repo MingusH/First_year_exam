@@ -23,7 +23,7 @@ public class Rabbit implements Actor {
     public Rabbit(){
         this.age = 0;
         this.maxEnergy = 30;
-        this.energy = 20;
+        this.energy = 30;
         this.energyGained = 15;
     }
     
@@ -31,30 +31,27 @@ public class Rabbit implements Actor {
     public void act(World world) {
         age();
 
-        if(energy == 0){
+        if(energy <= 0){
             die(world);
-        }
-        
-        
-        l = world.getLocation(this);
-        if(l==null){
             return;
         }
+        
+        try{
+            l = world.getLocation(this);
+        }catch(IllegalArgumentException e){
+            return;
+        }
+        
 
         if(world.getCurrentTime() >= 0 && world.getCurrentTime() <= 7){ //Hvis det er morgen eller eftermiddag, så går kaninen rundt
             eat(world);
             occupyBurrow(world);
             move(world);
-        } else if (world.getCurrentTime() > 7 && world.isDay()){
-            System.out.println("ehj");
-        }
-
-        if(world.getCurrentTime() > 7 && world.isDay()){
+        } else if (world.getCurrentTime() > 7 && world.getCurrentTime() < 12){
             eat(world);
             if(this.burrow != null){
                 moveToBurrow(world, burrow.getLocation(world));
             }
-            
         }
 
             
@@ -92,6 +89,7 @@ public class Rabbit implements Actor {
 
     public void moveToBurrow(World world, Location burrowLocation){
         Location l = world.getLocation(this);
+        System.out.println(burrowLocation);
         if(l == burrowLocation){ //hvis kaninen allerede står på sit hul.
             //Call enter burrow method
         }
