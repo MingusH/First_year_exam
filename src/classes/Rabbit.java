@@ -124,4 +124,19 @@ public class Rabbit implements Actor {
     public Burrow getBurrow(World world) {
         return burrow;
     }
+
+    public void occupyBurrow(World world) {
+        if (this.burrow != null) {
+            return; 
+        }
+
+        ArrayList<Location> list = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
+        for(Location tile : list){
+            if(world.getTile(tile) instanceof Burrow b){
+                burrow = b;
+                b.addRabbit(this);
+                break;
+            }
+        }
+    }
 }
