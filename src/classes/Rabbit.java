@@ -43,6 +43,7 @@ public class Rabbit implements Actor {
 
         if(world.getCurrentTime() >= 0 && world.getCurrentTime() <= 7){ //Hvis det er morgen eller eftermiddag, så går kaninen rundt
             eat(world);
+            occupyBurrow(world);
             move(world);
         } else if (world.getCurrentTime() > 7 && world.isDay()){
             System.out.println("ehj");
