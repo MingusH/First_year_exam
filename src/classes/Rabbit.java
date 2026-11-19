@@ -10,21 +10,36 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Rabbit implements Actor {
-    Boolean hasEaten;
-    int age;
-    //Hole hole;
-    int energy;
+    Burrow burrow;
     Location l;
+
+    //Age & Energy systems
+    int age; //Alder i steps
+    int maxEnergy;
+    int energy;
+    int energyGained; //Mængde af energy modtaget af at spise
+    
 
     public Rabbit(){
         this.age = 0;
-        this.hasEaten = false;
+        this.maxEnergy = 30;
         this.energy = 20;
+        this.energyGained = 15;
     }
     
     @Override 
     public void act(World world) {
+        age();
+
+        if(energy == 0){
+            die(world);
+        }
+        
+        
         l = world.getLocation(this);
+        if(l==null){
+            return;
+        }
 
         if(world.getCurrentTime() >= 0 && world.getCurrentTime() <= 7){ //Hvis det er morgen eller eftermiddag, så går kaninen rundt
             eat(world);
@@ -33,15 +48,26 @@ public class Rabbit implements Actor {
             System.out.println("ehj");
         }
 
+        if(world.getCurrentTime() > 7 && world.isDay()){
+            eat(world);
+            if(this.burrow != null){
+                moveToBurrow(world, burrow.getLocation(world));
+            }
+            
+        }
 
             
         if(world.isNight()){ // Tjekker om det er nat
             //Kaninen skal sove
         }
+    }
 
-        if(!hasEaten && world.isNight()){
-            die(world);
-        }
+    public void age(){ //Age & energy system
+        this.age++;
+        this.energy--;
+        if(age % 20*5 == 0);{//Hver femte dag
+            this.maxEnergy--;
+        } 
     }
 
     public void die(World world) {
@@ -52,27 +78,40 @@ public class Rabbit implements Actor {
         if(world.getNonBlocking(l) instanceof Grass){ //Tjekker om der er grass den kan spise.
             Object eatenGrass = world.getNonBlocking(l);
             world.delete(eatenGrass);
-            hasEaten = true;
+            if(energy < maxEnergy){ //Ændrer energiniveau for at spise.
+                if(this.maxEnergy - this.energy > this.energyGained){
+                    this.energy = this.energy + this.energyGained;
+                } else {
+                    this.energy = this.maxEnergy;
+                }
+            }
         }
     }
 
-    public void age() {
-        // Implement the logic for the rabbit aging
-        // This could involve increasing the rabbit's age and checking if it has reached a certain threshold for death.
-    }
 
-    public void reproduce() {
-        // Implement the logic for the rabbit reproducing
-        // This could involve creating a new Rabbit instance and adding it to the world.
-    }
+    public void moveToBurrow(World world, Location burrowLocation){
+        Location l = world.getLocation(this);
+        if(l == burrowLocation){ //hvis kaninen allerede står på sit hul.
+            //Call enter burrow method
+        }
 
-    public void digHole() {
-        // Implement the logic for the rabbit digging a hole
-        // This could involve creating a new Hole instance and adding it to the world.
+        //Bevægelse mod sit hul
+        Set<Location> neighbours = world.getEmptySurroundingTiles(l);
+        List<Location> list = new ArrayList<>(neighbours);
+        
+        double shortestDistance = Integer.MAX_VALUE;
+        Location closestLocation = l ;
+        for(Location index : list){
+            if(shortestDistance > Math.sqrt((index.getX() - burrowLocation.getX())^2 + (index.getY() - burrowLocation.getY())^2)){
+                closestLocation = index;
+            }
+        }
+        world.move(this,closestLocation);
     }
+    
 
     public void move(World world) {
-        Set<Location> neighbours = world.getEmptySurroundingTiles(l);
+        Set<Location> neighbours = world.getEmptySurroundingTiles();
         List<Location> list = new ArrayList<>(neighbours);
         Random random = new Random();
 
@@ -80,5 +119,9 @@ public class Rabbit implements Actor {
             l = list.get(random.nextInt(list.size())); // Vælger et tilfældigt tomt felt omkring kaninen
             world.move(this,l);
         }
+    }
+
+    public Burrow getBurrow(World world) {
+        return burrow;
     }
 }
