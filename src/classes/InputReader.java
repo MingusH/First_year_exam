@@ -4,10 +4,12 @@ package classes;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Constructor;
 import java.util.Random;
 import java.util.Scanner;
 import classes.Rabbit;
@@ -40,24 +42,20 @@ public class InputReader {
                 String amountStr = s.next();
                 int amount = intervalHandler(amountStr);
 
-                switch(object){
-                    case "grass":{
-                        for (int i = 0; i < amount; i++){
-                            Location l = randomLocation(true);
-                            world.setTile(l, new Grass());
-                        }
-                        break;
+                String className = "classes." + object.substring(0, 1).toUpperCase() + object.substring(1);
+
+                try {
+                    Class myClass = Class.forName(className);
+                    Constructor constructor = myClass.getConstructor();
+                    boolean isNonBlocking = NonBlocking.class.isAssignableFrom(myClass);
+                    for (int i = 0; i < amount; i++){
+                        Location l = randomLocation(isNonBlocking);
+                        world.setTile(l, constructor.newInstance());
                     }
-                    case "rabbit":{
-                        for (int i = 0; i < amount; i++){
-                            Location l = randomLocation(false);
-                            world.setTile(l, new Rabbit());
-                        }
-                        break;
-                    } default: {
-                        System.out.println("hoy");
-                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
+                
             }
         } catch (FileNotFoundException e){
             System.out.println("File not found " + inputFile.getName());
