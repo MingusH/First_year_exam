@@ -16,39 +16,43 @@ import classes.Rabbit;
 
 
 public class InputReader {
-    private File inputFile;
+
+    //FELTER
+    private File inputFile; // Vores input fil (Fra tema-ugen)
     private Program p;
     private World world;
 
 
+    //KONSTRUKTØR
     public InputReader(File file) {
-        this.inputFile = file;
+        this.inputFile = file; //Sætter fil til den tildelte input-fil
 
         try (Scanner s = new Scanner(file)){
-            this.p = new Program(s.nextInt(), 800, 1000);
-            this.world = p.getWorld();
+            this.p = new Program(s.nextInt(), 800, 1000); //Sætter feltet p (Program) til size (fra fil) med display størrelse + delay
+            this.world = p.getWorld(); //Sætter vores world til at hive programmet ud
         } catch (FileNotFoundException e){
-            System.out.println("no such file: " + file.getName());
+            System.out.println("no such file: " + file.getName()); //Hvis der rejses en undtagelse, så printes dette
         }
     }
 
-    public void build(){    
-        try (Scanner s = new Scanner(inputFile)){
-            s.nextLine();
+    //BUILD-KLASSE
+    public void build(){  //Bygger vores verden ud fra filens oplysninger
+        try (Scanner s = new Scanner(inputFile)){ 
+            s.nextLine(); // Vi skal jo starte fra linje 2 => springer linje 1 over
 
             while (s.hasNext()){
 
-                String object = s.next();
-                String amountStr = s.next();
-                int amount = intervalHandler(amountStr);
+                String object = s.next(); //Finder det objekt vi ønsker oprettet
+                String amountStr = s.next(); //Sætter antallet vi ønsker
+                int amount = intervalHandler(amountStr); //Bruges hvis filen angiver interval
 
-                String className = "classes." + object.substring(0, 1).toUpperCase() + object.substring(1);
+                String className = "classes." + object.substring(0, 1).toUpperCase() + object.substring(1); //Opretter en "sti" til oprettelse af de ønskede objekter 
 
                 try {
-                    Class myClass = Class.forName(className);
-                    Constructor constructor = myClass.getConstructor();
-                    boolean isNonBlocking = NonBlocking.class.isAssignableFrom(myClass);
-                    for (int i = 0; i < amount; i++){
+                    Class myClass = Class.forName(className); // finder klassen ud fra navnet (className)
+                    Constructor constructor = myClass.getConstructor(); //Erklærer og initialiserer "constructor" til den offentlige konstruktør for myClass
+                    boolean isNonBlocking = NonBlocking.class.isAssignableFrom(myClass); //Tjekker om klassen implementerer nonblocking
+                    for (int i = 0; i < amount; i++){ //Opretter objektet i world (på en tile) amount-gange, ift. hvor
                         Location l = randomLocation(isNonBlocking);
                         world.setTile(l, constructor.newInstance());
                     }
@@ -64,7 +68,7 @@ public class InputReader {
         setDisplayInformations();
     }
 
-    public Location randomLocation(Boolean isNonBlocking){
+    public Location randomLocation(Boolean isNonBlocking){ //Bruges til at oprette objektet på en tile, som er ledig (givet om den er NonBlocking eller ej)
         Random r = new Random();
         int size = p.getSize();
         int x =  r.nextInt(size);

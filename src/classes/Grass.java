@@ -14,15 +14,17 @@ public class Grass implements NonBlocking, Actor {
     @Override
     public void act(World world) {
 
-        // SPREADING OF GRASS
+        // Spredning af græs:
 
         Random r = new Random();
-        if (r.nextInt(8)==1) {
-            List<Location> empty_neighbors = new ArrayList<>();
-            Set<Location> neighbors = world.getSurroundingTiles();
-            for (Location l: neighbors){
-                if (!world.containsNonBlocking(l)){
-                    empty_neighbors.add(l);
+        if (r.nextInt(8) == 1) { // Sandsynligheden for at græs spreder sig pr. act er 1/8
+
+            List<Location> empty_neighbors = new ArrayList<>(); // Laver en ny liste, som kan bruges til
+            Set<Location> neighbors = world.getSurroundingTiles(); // Laver et set med alle omkringliggende tiles
+
+            for (Location l : neighbors) {
+                if (!world.containsNonBlocking(l)) { //Så længe at nabo-lokationen ikke har en non-blocking
+                    empty_neighbors.add(l); //Tilføj grass til listen af tomme naboer
                 }
             }
 
@@ -30,9 +32,9 @@ public class Grass implements NonBlocking, Actor {
                 return; // Afslutter act hvis der ikke er nogen ledige felter
             }
 
-            Location randomLocation = empty_neighbors.get(r.nextInt(empty_neighbors.size()));
+            Location randomLocation = empty_neighbors.get(r.nextInt(empty_neighbors.size())); //Vælger en tilfældig lokation ud fra vores liste af tomme naboer
 
-            world.setTile(randomLocation, new Grass());
+            world.setTile(randomLocation, new Grass()); //Sætter objektet (grass) på den tilfældige lokation
         }
     }
 }
