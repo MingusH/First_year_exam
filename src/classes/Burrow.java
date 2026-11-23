@@ -37,6 +37,11 @@ public class Burrow implements NonBlocking, Actor{
 
     void checkForRabbits(World world){
         Set<Location> set = world.getSurroundingTiles(world.getLocation(this));
+        if (world.getTile(world.getLocation(this)) instanceof Rabbit r){
+            currentRabbits.add(r);
+            world.remove(r);
+        }
+        
         for (Location tile: set){
             if (world.getTile(tile) instanceof Rabbit r){
                 if (rabbits.contains(r)){
@@ -49,9 +54,9 @@ public class Burrow implements NonBlocking, Actor{
 
     void releaseRabbits(World world){
         Random r = new Random();
-        ArrayList<Location> lst = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
+        ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
         for (Rabbit rabbit: currentRabbits){
-            world.setTile(lst.get(r.nextInt(lst.size())), rabbit);
+            world.setTile(neighbours.get(r.nextInt(neighbours.size())), rabbit);
         }
         currentRabbits.clear();
     }
