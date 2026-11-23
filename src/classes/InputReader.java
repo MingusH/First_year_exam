@@ -53,7 +53,7 @@ public class InputReader {
                     Constructor constructor = myClass.getConstructor(); //Erklærer og initialiserer "constructor" til den offentlige konstruktør for myClass
                     boolean isNonBlocking = NonBlocking.class.isAssignableFrom(myClass); //Tjekker om klassen implementerer nonblocking
                     for (int i = 0; i < amount; i++){ //Opretter objektet i world (på en tile) amount-gange, ift. hvor
-                        Location l = randomLocation(isNonBlocking);
+                        Location l = world.getRandomLocation(isNonBlocking);
                         world.setTile(l, constructor.newInstance());
                     }
                 } catch (Exception e) {
@@ -64,44 +64,6 @@ public class InputReader {
         } catch (FileNotFoundException e){
             System.out.println("File not found " + inputFile.getName());
         }
-
-        setDisplayInformations();
-    }
-
-    public Location randomLocation(Boolean isNonBlocking){ //Bruges til at oprette objektet på en tile, som er ledig (givet om den er NonBlocking eller ej)
-        Random r = new Random();
-        int size = p.getSize();
-        int x =  r.nextInt(size);
-        int y = r.nextInt(size);
-
-        Location l = new Location(x, y);
-
-        if (isNonBlocking){
-            while(world.containsNonBlocking(l)){
-                x = r.nextInt(size); //finder tilfældig x værdi
-                y = r.nextInt(size); //finder tilfældig y værdi
-            
-                l = new Location(x,y);
-            } 
-        } else {
-            while(!world.isTileEmpty(l)){
-                x = r.nextInt(size); //finder tilfældig x værdi
-                y = r.nextInt(size); //finder tilfældig y værdi
-            
-                l = new Location(x,y);
-            } 
-        }
-        return l;
-    }
-
-    private void setDisplayInformations(){
-        DisplayInformation gdi = new DisplayInformation(Color.GREEN, "grass");
-        DisplayInformation rdi = new DisplayInformation(Color.WHITE, "rabbit-small");
-        DisplayInformation bdi = new DisplayInformation(Color.BLACK, "hole-small");
-
-        p.setDisplayInformation(Grass.class, gdi);
-        p.setDisplayInformation(Rabbit.class, rdi);
-        p.setDisplayInformation(Burrow.class, bdi);
     }
 
     public int intervalHandler(String input){
@@ -129,4 +91,6 @@ public class InputReader {
     public File getFile(){
         return inputFile;
     }
+
+
 }

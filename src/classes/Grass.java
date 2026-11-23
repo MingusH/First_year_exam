@@ -1,5 +1,7 @@
 package classes;
 
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
@@ -8,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.awt.Color;
 
-public class Grass implements NonBlocking, Actor {
+
+public class Grass implements NonBlocking, Actor, DynamicDisplayInformationProvider {
 
     @Override
     public void act(World world) {
@@ -36,5 +40,8 @@ public class Grass implements NonBlocking, Actor {
 
             world.setTile(randomLocation, new Grass()); //Sætter objektet (grass) på den tilfældige lokation
         }
+    }
+    public DisplayInformation getInformation(){
+        return new DisplayInformation(Color.GREEN, "grass");
     }
 }
