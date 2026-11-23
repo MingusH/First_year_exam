@@ -33,15 +33,21 @@ public class Burrow implements NonBlocking, Actor{
         if (world.getCurrentTime() == 0){
             releaseRabbits(world);
         }
+
+        if (breedRabbits() && world.getCurrentTime() == 15){
+            birthRabbit();
+        }
     }
 
     void checkForRabbits(World world){
         Set<Location> set = world.getSurroundingTiles(world.getLocation(this));
         if (world.getTile(world.getLocation(this)) instanceof Rabbit r){
-            currentRabbits.add(r);
-            world.remove(r);
+            if (rabbits.contains(r)){
+                currentRabbits.add(r);
+                world.remove(r);
+            }
         }
-        
+
         for (Location tile: set){
             if (world.getTile(tile) instanceof Rabbit r){
                 if (rabbits.contains(r)){
@@ -52,11 +58,26 @@ public class Burrow implements NonBlocking, Actor{
         }
     }
 
+    Boolean breedRabbits(){
+        return currentRabbits.size() >= 2;
+    }
+
+    void birthRabbit(){
+        currentRabbits.add(new Rabbit());
+    }
+
     void releaseRabbits(World world){
         Random r = new Random();
+        int num;
         ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
         for (Rabbit rabbit: currentRabbits){
-            world.setTile(neighbours.get(r.nextInt(neighbours.size())), rabbit);
+            int size = neighbours.size();
+            if (size > 0){
+                System.out.println(size);
+                num = r.nextInt(size);
+                world.setTile(neighbours.get(num), rabbit);
+                neighbours.remove(num);
+            }
         }
         currentRabbits.clear();
     }
@@ -69,5 +90,9 @@ public class Burrow implements NonBlocking, Actor{
         if (rabbits.size() < maxSize){
             rabbits.add(rabbit);
         }
+    }
+
+    public void remove(Rabbit rabbit){
+        rabbits.remove(rabbit);
     }
 }

@@ -1,4 +1,4 @@
 5
 burrow 1
-rabbit 1
-grass 3
+rabbit 5
+grass 10

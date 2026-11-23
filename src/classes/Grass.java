@@ -17,8 +17,8 @@ public class Grass implements NonBlocking, Actor {
         // SPREADING OF GRASS
 
         Random r = new Random();
-        if (r.nextBoolean()) {
-            List<Location> empty_neighbors = new ArrayList();
+        if (r.nextInt(8)==1) {
+            List<Location> empty_neighbors = new ArrayList<>();
             Set<Location> neighbors = world.getSurroundingTiles();
             for (Location l: neighbors){
                 if (!world.containsNonBlocking(l)){
