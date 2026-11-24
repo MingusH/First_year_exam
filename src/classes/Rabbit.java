@@ -1,15 +1,18 @@
 package classes;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Rabbit implements Actor {
+public class Rabbit implements Actor, DynamicDisplayInformationProvider{
     Burrow burrow;
     Location l;
 
@@ -18,6 +21,8 @@ public class Rabbit implements Actor {
     int maxEnergy;
     int energy;
     int energyGained; //Mængde af energy modtaget af at spise
+
+    Boolean isSleeping;
     
 
     public Rabbit(){
@@ -44,6 +49,7 @@ public class Rabbit implements Actor {
         
 
         if(world.getCurrentTime() >= 0 && world.getCurrentTime() <= 7){ //Hvis det er morgen eller eftermiddag, så går kaninen rundt
+            isSleeping = false;
             eat(world);
             occupyBurrow(world);
             move(world);
@@ -51,12 +57,16 @@ public class Rabbit implements Actor {
             eat(world);
             if(this.burrow != null){
                 moveToBurrow(world, burrow.getLocation(world));
+            } else { // continues to move around and eat after 7 even if no burrow
+                eat(world);
+                occupyBurrow(world);
+                move(world);
             }
         }
 
             
-        if(world.isNight()){ // Tjekker om det er nat
-            //Kaninen skal sove
+        if(world.getCurrentTime() >= 12){ // Tjekker om det er nat
+            isSleeping = true;
         }
     }
 
@@ -79,8 +89,6 @@ public class Rabbit implements Actor {
         if(world.getNonBlocking(l) instanceof Grass){ //Tjekker om der er grass den kan spise.
             Object eatenGrass = world.getNonBlocking(l);
             world.delete(eatenGrass);
-            System.out.println(maxEnergy);
-            System.out.println(energy);
             if(energy < maxEnergy){ //Ændrer energiniveau for at spise.
                 if(this.maxEnergy - this.energy > this.energyGained){
                     this.energy = this.energy + this.energyGained;
@@ -94,11 +102,6 @@ public class Rabbit implements Actor {
 
     public void moveToBurrow(World world, Location burrowLocation){
         Location l = world.getLocation(this);
-        System.out.println(burrowLocation);
-        if(l.equals(burrowLocation)){ //hvis kaninen allerede står på sit hul.
-            //Call enter burrow method
-            return;
-        }
 
         //Bevægelse mod sit hul
         ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(l));
@@ -140,11 +143,25 @@ public class Rabbit implements Actor {
 
         ArrayList<Location> list = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
         for(Location tile : list){
-            if(world.getTile(tile) instanceof Burrow b){
+            if(world.getTile(tile) instanceof Burrow b && !b.isFull()){
                 burrow = b;
                 b.addRabbit(this);
                 break;
             }
         }
+    }
+
+    public DisplayInformation getInformation(){
+        String imageKey = "rabbit";
+        if (age <= 20){
+            imageKey = imageKey + "-small";
+        } 
+        if (isSleeping){
+            imageKey = imageKey + "-sleeping";
+        }
+        // add fungi when it comes
+
+
+        return new DisplayInformation(Color.WHITE, imageKey);
     }
 }

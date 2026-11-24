@@ -2,6 +2,8 @@ package classes;
 
 import java.util.ArrayList;
 
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
@@ -9,12 +11,16 @@ import java.util.ArrayList;
 import itumulator.world.Location;
 import java.util.Set;
 import java.util.Random;
+import java.awt.Button;
+import java.awt.Color;
 
-public class Burrow implements NonBlocking, Actor{
+
+public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProvider{
     ArrayList<Rabbit> rabbits;
     ArrayList<Rabbit> currentRabbits;
     int maxSize;
     int timeEmpty;
+    ArrayList<Burrow> tunnel;
 
     public Burrow(){
         this.rabbits = new ArrayList<>();
@@ -37,6 +43,10 @@ public class Burrow implements NonBlocking, Actor{
         if (breedRabbits() && world.getCurrentTime() == 15){
             birthRabbit();
         }
+
+        if (isCurrentlyFull() && world.getCurrentTime() == 19){
+            digBurrow(world);
+        }
     }
 
     void checkForRabbits(World world){
@@ -58,6 +68,20 @@ public class Burrow implements NonBlocking, Actor{
         }
     }
 
+    void digBurrow(World world){
+        if (tunnel == null){
+            tunnel = new ArrayList<>();
+            tunnel.add(this);
+        }
+
+        Location l = world.getRandomLocation(true);
+        world.setTile(l, new Burrow());
+        if (world.getNonBlocking(l) instanceof Burrow b){
+            tunnel.add(b);
+            b.connectTunnel(tunnel);
+        }
+    }
+
     Boolean breedRabbits(){
         return currentRabbits.size() >= 2;
     }
@@ -69,16 +93,23 @@ public class Burrow implements NonBlocking, Actor{
     void releaseRabbits(World world){
         Random r = new Random();
         int num;
-        ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
+        Burrow randomBurrow = this;
+        ArrayList<Location> neighbours = new ArrayList<>();
+
         for (Rabbit rabbit: currentRabbits){
+            if (tunnel != null){
+                randomBurrow = tunnel.get(r.nextInt(tunnel.size()));
+            }
+
+            neighbours = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(randomBurrow)));
             int size = neighbours.size();
+
             if (size > 0){
-                System.out.println(size);
                 num = r.nextInt(size);
                 world.setTile(neighbours.get(num), rabbit);
-                neighbours.remove(num);
             }
         }
+
         currentRabbits.clear();
     }
 
@@ -92,7 +123,26 @@ public class Burrow implements NonBlocking, Actor{
         }
     }
 
+    public void connectTunnel(ArrayList<Burrow> tunnel){
+        this.tunnel = tunnel;
+    }
+
     public void remove(Rabbit rabbit){
         rabbits.remove(rabbit);
+    }
+
+    public Boolean isFull(){
+        return rabbits.size() >= maxSize;
+    }
+
+    public Boolean isCurrentlyFull(){
+        return currentRabbits.size() >= maxSize;
+    }
+
+    public DisplayInformation getInformation(){
+        if (rabbits.size() > 2){
+            return new DisplayInformation(Color.BLACK, "hole");
+        }
+        return new DisplayInformation(Color.BLACK, "hole-small");
     }
 }

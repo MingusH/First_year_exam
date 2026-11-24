@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Random;
 
 /**
  * The World class provides an abstraction for our simulated worlds. A world
@@ -492,6 +493,31 @@ public class World {
         }
         return objects;
     }
+
+    public Location getRandomLocation(Boolean isNonBlocking){ //Bruges til at oprette objektet på en tile, som er ledig (givet om den er NonBlocking eller ej)
+        Random r = new Random();
+        int x =  r.nextInt(size);
+        int y = r.nextInt(size);
+
+        Location l = new Location(x, y);
+
+        if (isNonBlocking){
+            while(containsNonBlocking(l)){
+                x = r.nextInt(size); //finder tilfældig x værdi
+                y = r.nextInt(size); //finder tilfældig y værdi
+            
+                l = new Location(x,y);
+            } 
+        } else {
+            while(!isTileEmpty(l)){
+                x = r.nextInt(size); //finder tilfældig x værdi
+                y = r.nextInt(size); //finder tilfældig y værdi
+            
+                l = new Location(x,y);
+            } 
+        }
+        return l;
+}
 
     // Private methods
 
