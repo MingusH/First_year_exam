@@ -29,7 +29,7 @@ public class Rabbit implements Actor {
     
     @Override 
     public void act(World world) {
-        age();
+        age(); // Kalder age metode => øger alder + tager energi hver 5. dag
 
         if(energy <= 0){
             die(world);
