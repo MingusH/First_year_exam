@@ -16,17 +16,18 @@ import java.awt.Color;
 
 
 public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProvider{
-    ArrayList<Rabbit> rabbits;
-    ArrayList<Rabbit> currentRabbits;
-    int maxSize;
-    int timeEmpty;
-    ArrayList<Burrow> tunnel;
+    private ArrayList<Rabbit> rabbits;
+    private ArrayList<Rabbit> currentRabbits;
+    private int maxSize;
+    private int timeEmpty;
+    private ArrayList<Burrow> tunnel;
 
     public Burrow(){
         this.rabbits = new ArrayList<>();
         this.currentRabbits = new ArrayList<>();
         this.maxSize = 4;
         this.timeEmpty = 0;
+        this.tunnel = new ArrayList<>();
     }
 
 
@@ -83,7 +84,15 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
     }
 
     Boolean breedRabbits(){
-        return currentRabbits.size() >= 2;
+        int count = 0;
+        for (Burrow burrow: tunnel){
+            for (Rabbit rabbit: burrow.getCurrentRabbits()){
+                if (rabbit.getAge() >= 40){
+                    count++;
+                }
+            }
+        }
+        return count >= 2;
     }
 
     void birthRabbit(){
@@ -97,7 +106,7 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         ArrayList<Location> neighbours = new ArrayList<>();
 
         for (Rabbit rabbit: currentRabbits){
-            if (tunnel != null){
+            if (tunnel.size() != 0){
                 randomBurrow = tunnel.get(r.nextInt(tunnel.size()));
             }
 
@@ -137,6 +146,10 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
 
     public Boolean isCurrentlyFull(){
         return currentRabbits.size() >= maxSize;
+    }
+
+    public ArrayList<Rabbit> getCurrentRabbits(){
+        return currentRabbits;
     }
 
     public DisplayInformation getInformation(){

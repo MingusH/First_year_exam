@@ -41,6 +41,8 @@ public class Grass implements NonBlocking, Actor, DynamicDisplayInformationProvi
             world.setTile(randomLocation, new Grass()); //Sætter objektet (grass) på den tilfældige lokation
         }
     }
+
+    @Override 
     public DisplayInformation getInformation(){
         return new DisplayInformation(Color.GREEN, "grass");
     }
