@@ -12,24 +12,16 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Rabbit implements Actor, DynamicDisplayInformationProvider{
-    Burrow burrow;
-    Location l;
-
-    //Age & Energy systems
-    int age; //Alder i steps
-    int maxEnergy;
-    int energy;
-    int energyGained; //Mængde af energy modtaget af at spise
-
-    Boolean isSleeping;
+public class Rabbit extends Animal{
+    private Burrow burrow;
     
 
     public Rabbit(){
-        this.age = 0;
+        super();
         this.maxEnergy = 30;
         this.energy = 30;
-        this.energyGained = 10;
+        this.energyGain = 10;
+        this.energyLoss = 5;
     }
     
     @Override 
@@ -52,15 +44,15 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider{
             isSleeping = false;
             eat(world);
             occupyBurrow(world);
-            move(world);
+            moveAround(world);
         } else if (world.getCurrentTime() > 7 && world.getCurrentTime() < 12){
             eat(world);
             if(this.burrow != null){
-                moveToBurrow(world, burrow.getLocation(world));
+                moveTo(world, burrow.getLocation(world));
             } else { // continues to move around and eat after 7 even if no burrow
                 eat(world);
                 occupyBurrow(world);
-                move(world);
+                moveAround(world);
             }
         }
 
@@ -70,65 +62,25 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider{
         }
     }
 
-    public void age(){ //Age & energy system
-        this.age++;
-        this.energy--;
-        if(age % 20 == 0){//Hver femte dag
-            this.maxEnergy = this.maxEnergy - 5;
-        } 
-    }
-
     public void die(World world) {
         if (burrow != null){
             burrow.remove(this);
         }
-        world.delete(this);
+        super.die(world);
     }
 
+    @Override
     public void eat(World world) {
         if(world.getNonBlocking(l) instanceof Grass){ //Tjekker om der er grass den kan spise.
             Object eatenGrass = world.getNonBlocking(l);
             world.delete(eatenGrass);
             if(energy < maxEnergy){ //Ændrer energiniveau for at spise.
-                if(this.maxEnergy - this.energy > this.energyGained){
-                    this.energy = this.energy + this.energyGained;
+                if(this.maxEnergy - this.energy > this.energyGain){
+                    this.energy = this.energy + this.energyGain;
                 } else {
                     this.energy = this.maxEnergy;
                 } 
             }
-        }
-    }
-
-
-    public void moveToBurrow(World world, Location burrowLocation){
-        Location l = world.getLocation(this);
-
-        //Bevægelse mod sit hul
-        ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(l));
-
-        double shortestDistance = Math.hypot(burrowLocation.getX() - l.getX(), burrowLocation.getY() - l.getY());
-        Location closestLocation = l;
-        for(Location loc : neighbours){
-            double distance = Math.hypot(burrowLocation.getX() - loc.getX(), burrowLocation.getY() - loc.getY());
-            if(distance < shortestDistance){
-                shortestDistance = distance;
-                closestLocation = loc;
-            }
-        }
-        if(!closestLocation.equals(l)){
-            world.move(this,closestLocation);
-        }
-    }
-    
-
-    public void move(World world) {
-        Set<Location> neighbours = world.getEmptySurroundingTiles();
-        List<Location> list = new ArrayList<>(neighbours);
-        Random random = new Random();
-
-        if(list.size()>0){
-            l = list.get(random.nextInt(list.size())); // Vælger et tilfældigt tomt felt omkring kaninen
-            world.move(this,l);
         }
     }
 
@@ -151,9 +103,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider{
         }
     }
 
+
+    @Override 
     public DisplayInformation getInformation(){
         String imageKey = "rabbit";
-        if (age <= 20){
+        if (age <= 40){
             imageKey = imageKey + "-small";
         } 
         if (isSleeping){
