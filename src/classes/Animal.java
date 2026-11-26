@@ -25,6 +25,10 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     protected boolean isRemoved; // er dyret fjernet fra map? f.eks. når det er i en hule.
     protected Location l; // Dyret lokation (opdateres ved act)
 
+    protected Animal() {
+        this(0);
+    }
+
     public Animal(int maxEnergy) {
         this.age = 0; // Alle dyr har en alder på 0 ved instanstiering
         this.isSleeping = false;

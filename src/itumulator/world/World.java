@@ -502,22 +502,28 @@ public class World {
         Location l = new Location(x, y);
 
         if (isNonBlocking){
-            while(containsNonBlocking(l)){
+            for (int i = 0; i < 1000; i++){
                 x = r.nextInt(size); //finder tilfældig x værdi
                 y = r.nextInt(size); //finder tilfældig y værdi
             
                 l = new Location(x,y);
+                if (!containsNonBlocking(l)){
+                    return l;
+                }
             } 
         } else {
-            while(!isTileEmpty(l)){
+            for (int i = 0; i < 1000; i++){
                 x = r.nextInt(size); //finder tilfældig x værdi
                 y = r.nextInt(size); //finder tilfældig y værdi
             
                 l = new Location(x,y);
+                if (isTileEmpty(l)){
+                    return l;
+                }
             } 
         }
-        return l;
-}
+        return null;
+    }
 
     // Private methods
 
