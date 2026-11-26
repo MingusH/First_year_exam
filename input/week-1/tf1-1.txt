@@ -1,6 +1,6 @@
 5
 rabbit 4
-grass 10
+grass 5
 burrow 2
 berry 2
 bear 1

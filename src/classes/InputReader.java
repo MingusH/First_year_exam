@@ -28,7 +28,7 @@ public class InputReader {
         this.inputFile = file; //Sætter fil til den tildelte input-fil
 
         try (Scanner s = new Scanner(file)){
-            this.p = new Program(s.nextInt(), 800, 1000); //Sætter feltet p (Program) til size (fra fil) med display størrelse + delay
+            this.p = new Program(s.nextInt(), 800, 500); //Sætter feltet p (Program) til size (fra fil) med display størrelse + delay
             this.world = p.getWorld(); //Sætter vores world til at hive programmet ud
         } catch (FileNotFoundException e){
             System.out.println("no such file: " + file.getName()); //Hvis der rejses en undtagelse, så printes dette
