@@ -40,9 +40,9 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
 
         if (world.getCurrentTime() == 0) {
             releaseRabbits(world);
-            for (Burrow burrow : tunnel) {
+            for (Burrow burrow: tunnel){
                 burrow.setBirthed(false);
-            }
+            } 
         }
 
         if (world.getCurrentTime() == 15 && !rabbitBirthed) {
@@ -96,7 +96,7 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         }
     }
 
-    int breedRabbits() {
+    Boolean breedRabbits() {
         int count = 0;
         for (Burrow burrow : tunnel) {
             for (Rabbit rabbit : burrow.getCurrentRabbits()) {
