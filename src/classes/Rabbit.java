@@ -2,8 +2,6 @@ package classes;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Set;
-
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -66,6 +64,7 @@ public class Rabbit extends Animal {
         return burrow;
     }
 
+    //Tager en plads i en burrow - hvis rabbit endnu ikke har en plads i en
     public void occupyBurrow(World world) {
         if (this.burrow != null) {
             return;

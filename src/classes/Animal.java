@@ -25,19 +25,16 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     protected boolean isRemoved; // er dyret fjernet fra map? f.eks. når det er i en hule.
     protected Location l; // Dyret lokation (opdateres ved act)
 
-    protected Animal() {
-        this(0);
-    }
-
+    //Animal konstruktør
     public Animal(int maxEnergy) {
         this.age = 0; // Alle dyr har en alder på 0 ved instanstiering
         this.isSleeping = false;
         this.isRemoved = true;
         this.maxEnergy = maxEnergy;
-        this.energy = maxEnergy; //Sætter automatisk energy på baggrund af maxEnergy
+        this.energy = maxEnergy; // Sætter automatisk energy på baggrund af maxEnergy
     }
 
-    // FÆLLES ACT METODE, SOM SKAL KALDER MED SUPER.ACT()
+    // FÆLLES ACT METODE, SOM SKAL KALDES MED SUPER.ACT()
     public void act(World world) {
 
         // Kalder age for hvert act
@@ -60,7 +57,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
     // FÆLLES METODER FOR ANIMALS
 
-    //Age-metode, som eksekveres for hvert act-kald
+    // Age-metode, som eksekveres for hvert act-kald
     public void age() {
         age++;
         energy--;
@@ -69,15 +66,16 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
-    //
+    // Die-metode, som sletter dyr fra verden
     public void die(World world) {
         world.delete(this);
     }
 
+    //Eat funktion - GRASS
     public void eat(World world) {
         if (world.getNonBlocking(l) instanceof Grass) { // Tjekker om der er grass den kan spise.
             Object eatenGrass = world.getNonBlocking(l);
-            world.delete(eatenGrass);
+            world.delete(eatenGrass); //Sletter græs på lokationen l fra verdenen
             if (energy < maxEnergy) { // Ændrer energiniveau for at spise.
                 if (this.maxEnergy - this.energy > this.energyGain) {
                     this.energy = this.energy + this.energyGain;
@@ -88,12 +86,13 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+
+    //Move to - nyt felt
     public void moveTo(World world, Location to) {
 
-        // Bevægelse mod to
-        ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(l));
+        ArrayList<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(l)); // Finder tomme pladser omkring nuverende lokation
 
-        double shortestDistance = Math.hypot(to.getX() - l.getX(), to.getY() - l.getY());
+        double shortestDistance = Math.hypot(to.getX() - l.getX(), to.getY() - l.getY()); //Finder den lige afstand fra dyrest lokaltion (l) til målet (to)
         Location closestLocation = l;
         for (Location loc : neighbours) {
             double distance = Math.hypot(to.getX() - loc.getX(), to.getY() - loc.getY());
@@ -108,6 +107,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+    //Ryk til en tilfældig tom plads omkring nuværend elokation
     public void moveAround(World world) {
         Set<Location> neighbours = world.getEmptySurroundingTiles();
         List<Location> list = new ArrayList<>(neighbours);
@@ -119,6 +119,8 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+
+    //retunér nuværende alder
     public int getAge() {
         return age;
     }
