@@ -128,7 +128,105 @@ public class KravTester {
         assertTrue(placementsSeen.size() > 1, "Kaninerne bør placeres tilfældigt");
     }
 
+    // Krav: Kaniner kan dø.
+    @Test
+    void rabbitCanDie() {
+        // Kaninen fjernes fra verden når den dør
+        World world = new World(5);
+        Rabbit rabbit = new Rabbit();
+        world.setTile(new Location(2, 2), rabbit);
+        rabbit.die(world);
+        assertFalse(world.contains(rabbit), "Kaninen er stadig i verden efter den er død");
+
+        // Kaninen dør af sult når den ikke har noget at spise
+        World hungryWorld = new World(5); // Ingen græs i verden
+        Rabbit hungryRabbit = new Rabbit();
+        hungryWorld.setTile(new Location(2, 2), hungryRabbit);
+
+        int acts = 0;
+        while (hungryWorld.contains(hungryRabbit) && acts < 1000) {
+            hungryWorld.setCurrentLocation(hungryWorld.getLocation(hungryRabbit));
+            hungryRabbit.act(hungryWorld);
+            acts++;
+        }
+
+        assertFalse(hungryWorld.contains(hungryRabbit), "Kaninen døde ikke af sult");
+        assertTrue(acts > 1, "Kaninen døde med det samme i stedet for at sulte langsomt");
+    }
+
+    // Krav: Kaniner kan spise græs, og lever længere når de gør.
+    @Test
+    void rabbitCanEatGrassAndLivesLonger() {
+        // Kaninen spiser græsset den står på
+        World world = new World(5);
+        Location l = new Location(2, 2);
+        Grass grass = new Grass();
+        Rabbit rabbit = new Rabbit();
+        world.setTile(l, grass);
+        world.setTile(l, rabbit);
+        world.setCurrentLocation(l);
+        rabbit.act(world);
+        assertFalse(world.contains(grass), "Kaninen spiste ikke græsset den stod på");
+
+        // En kanin der får græs lever længere end en kanin der ikke gør
+        int withoutGrass = actsUntilDeath(false);
+        int withGrass = actsUntilDeath(true);
+        assertTrue(withGrass > withoutGrass,
+                "Kaninen med græs (" + withGrass + " acts) levede ikke længere end uden (" + withoutGrass + " acts)");
+    }
+
+    // Krav: Kaninens alder bestemmer hvor meget energi den har.
+    @Test
+    void rabbitAgeDeterminesEnergy() {
+        World world = new World(5);
+        Rabbit rabbit = new Rabbit();
+        world.setTile(new Location(2, 2), rabbit);
+
+        int startMaxEnergy = rabbit.getMaxEnergy();
+        int previousMaxEnergy = startMaxEnergy;
+
+        // Kaninen fodres med græs hver act, så den kun dør af alderdom
+        while (world.contains(rabbit) && rabbit.getAge() < 60) {
+            Location current = world.getLocation(rabbit);
+            if (!world.containsNonBlocking(current)) {
+                world.setTile(current, new Grass());
+            }
+            world.setCurrentLocation(current);
+            rabbit.act(world);
+
+            // Max-energien må aldrig stige når kaninen bliver ældre
+            assertTrue(rabbit.getMaxEnergy() <= previousMaxEnergy, "Max-energien steg med alderen");
+            // Kaninen kan aldrig have mere energi end dens max-energi tillader
+            assertTrue(rabbit.getEnergy() <= rabbit.getMaxEnergy(),
+                    "Energi (" + rabbit.getEnergy() + ") over max (" + rabbit.getMaxEnergy() + ")");
+            previousMaxEnergy = rabbit.getMaxEnergy();
+        }
+
+        assertTrue(rabbit.getAge() >= 40, "Kaninen døde før testen kunne se den blive gammel");
+        assertTrue(rabbit.getMaxEnergy() < startMaxEnergy, "En gammel kanin har ikke mindre max-energi end en ung");
+    }
+
     // Hjælpemetoder
+
+    // Tæller hvor mange acts en kanin overlever. Med feedGrass lægges der græs under kaninen før hver act.
+    private int actsUntilDeath(boolean feedGrass) {
+        World world = new World(5);
+        Rabbit rabbit = new Rabbit();
+        world.setTile(new Location(2, 2), rabbit);
+
+        int acts = 0;
+        while (world.contains(rabbit) && acts < 1000) {
+            Location current = world.getLocation(rabbit);
+            if (feedGrass && !world.containsNonBlocking(current)) {
+                world.setTile(current, new Grass());
+            }
+            world.setCurrentLocation(current);
+            rabbit.act(world);
+            acts++;
+        }
+        assertFalse(world.contains(rabbit), "Kaninen døde aldrig");
+        return acts;
+    }
 
     private World buildWorld(String path) {
         InputReader ir = new InputReader(new File(path));

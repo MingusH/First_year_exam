@@ -66,6 +66,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         energy--;
         if (age % 20 == 0) {
             maxEnergy = maxEnergy - energyLoss;
+            energy = energy - energyLoss;
         }
     }
 
@@ -121,6 +122,14 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
     public int getAge() {
         return age;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getMaxEnergy() {
+        return maxEnergy;
     }
 
     @Override
