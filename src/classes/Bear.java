@@ -53,7 +53,6 @@ public class Bear extends Hunter {
         
     }
 
-
     @Override
     public void moveAround(World world) {
         Set<Location> neighbours = world.getEmptySurroundingTiles();

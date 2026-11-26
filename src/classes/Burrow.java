@@ -79,11 +79,6 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
     }
 
     void digBurrow(World world) {
-        if (tunnel == null) {
-            tunnel = new ArrayList<>();
-            tunnel.add(this);
-        }
-
         Location l = world.getRandomLocation(true);
         if (l == null){
             return;

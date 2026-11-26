@@ -2,3 +2,6 @@
 rabbit 4
 grass 10
 burrow 1
+bear 2
+wolf 2
+berry 3

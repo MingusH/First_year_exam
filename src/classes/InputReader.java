@@ -52,10 +52,26 @@ public class InputReader {
                     Class myClass = Class.forName(className); // finder klassen ud fra navnet (className)
                     Constructor constructor = myClass.getConstructor(); //Erklærer og initialiserer "constructor" til den offentlige konstruktør for myClass
                     boolean isNonBlocking = NonBlocking.class.isAssignableFrom(myClass); //Tjekker om klassen implementerer nonblocking
-                    for (int i = 0; i < amount; i++){ //Opretter objektet i world (på en tile) amount-gange, ift. hvor
+
+                    if(object.equalsIgnoreCase("wolf")){ // Opretter wolfpack hvis object er en wolf
+                        WolfPack pack = new WolfPack();
+
+                        for (int i = 0; i < amount; i++){ //Opretter wolf i world (på en tile) amount-gange, ift. hvor
+                        
+                            Wolf wolf = (Wolf) constructor.newInstance();
+                            pack.addWolf(wolf);
+
+                            Location l = world.getRandomLocation(isNonBlocking); //placerer ulven tilfældigt
+                            world.setTile(l, wolf);
+                        }
+                        
+                    } else { //Hvis object ikke er en ulv
+                        for (int i = 0; i < amount; i++){ //Opretter objektet i world (på en tile) amount-gange, ift. hvor
                         Location l = world.getRandomLocation(isNonBlocking);
                         world.setTile(l, constructor.newInstance());
+                        }
                     }
+                    
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
