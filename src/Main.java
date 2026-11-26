@@ -12,7 +12,6 @@ public class Main {
         Program p = inputReader.getProgram();
         p.show();
 
-        
         for (int i = 0; i < 200; i++) {
             p.simulate();
         } // kører 200 runder, alts˚a kaldes 'act' 200 gange for alle placerede
