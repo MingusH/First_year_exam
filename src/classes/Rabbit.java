@@ -72,14 +72,15 @@ public class Rabbit extends Animal {
 
         ArrayList<Location> list = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
         for (Location tile : list) {
-            if (world.getTile(tile) instanceof Burrow b && !b.isFull()) {
+            if (world.getTile(tile) instanceof Burrow b && !b.isFull()) { //Hvis der er en borrow (som ikke er fyldt) på de omkringliggende pladser, så tilføjer vi rabbit (current object) til den burrow
                 burrow = b;
                 b.addRabbit(this);
-                break;
+                break; //bryder løkken
             }
         }
     }
 
+    //Ændring af displayinformation
     @Override
     public DisplayInformation getInformation() {
         String imageKey = "rabbit";
