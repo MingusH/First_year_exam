@@ -100,7 +100,7 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         int count = 0;
         for (Burrow burrow : tunnel) {
             for (Rabbit rabbit : burrow.getCurrentRabbits()) {
-                if (rabbit.getAge() >= 40) {
+                if (rabbit.getAge() >= 20) {
                     count++;
                 }
             }

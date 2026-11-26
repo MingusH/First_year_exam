@@ -84,7 +84,7 @@ public class Rabbit extends Animal {
     @Override
     public DisplayInformation getInformation() {
         String imageKey = "rabbit";
-        if (age <= 40) {
+        if (age <= 20) {
             imageKey = imageKey + "-small";
         }
         if (isSleeping) {

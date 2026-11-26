@@ -24,7 +24,7 @@ public class Grass implements NonBlocking, Actor, DynamicDisplayInformationProvi
                 // Spredning af græs:
 
         Random r = new Random();
-        if (r.nextInt(6) == 1) { // Sandsynligheden for at græs spreder sig pr. act er 1/8
+        if (r.nextInt(6) == 1) { // Sandsynligheden for at græs spreder sig pr. act er 1/6
 
             List<Location> empty_neighbors = new ArrayList<>(); // Laver en ny liste, som kan bruges til
             Set<Location> neighbors = world.getSurroundingTiles(); // Laver et set med alle omkringliggende tiles

@@ -43,7 +43,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         // Kalder age for hvert act
         age();
 
-        System.out.println(age);
         // Tjekker om dyret har mistet al energi - og derved dør
         if (energy <= 0) {
             die(world);
@@ -57,7 +56,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         } catch (IllegalArgumentException e) {
             isRemoved = true;
         }
-        System.out.println("Energy: " + energy);
     }
 
     // FÆLLES METODER FOR ANIMALS
@@ -68,7 +66,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         energy--;
         if (age % 20 == 0) {
             maxEnergy = maxEnergy - energyLoss;
-            System.out.println(energyLoss);
         }
     }
 
