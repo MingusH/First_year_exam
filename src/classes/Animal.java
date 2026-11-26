@@ -34,7 +34,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         this.isSleeping = false;
         this.isRemoved = true;
         this.maxEnergy = maxEnergy;
-        this.energy = maxEnergy; // Rabbit start på
+        this.energy = maxEnergy; //Sætter automatisk energy på baggrund af maxEnergy
     }
 
     // FÆLLES ACT METODE, SOM SKAL KALDER MED SUPER.ACT()

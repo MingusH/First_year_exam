@@ -16,9 +16,7 @@ public class Bear extends Hunter {
     double territorySize;
 
     public Bear(){
-        super();
-        this.maxEnergy = 40;
-        this.energy = maxEnergy;
+        super(40);
         this.energyGain = 10; // Af kød
         this.energyLoss = 5;
         this.energyGainBerry = 5;
