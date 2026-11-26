@@ -494,7 +494,7 @@ public class World {
         return objects;
     }
 
-    public Location getRandomLocation(Boolean isNonBlocking){ //Bruges til at oprette objektet på en tile, som er ledig (givet om den er NonBlocking eller ej)
+    public Location getRandomLocation(boolean isNonBlocking){ //Bruges til at oprette objektet på en tile, som er ledig (givet om den er NonBlocking eller ej)
         Random r = new Random();
         int x =  r.nextInt(size);
         int y = r.nextInt(size);
