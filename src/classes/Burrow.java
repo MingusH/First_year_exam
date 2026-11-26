@@ -96,7 +96,7 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         }
     }
 
-    Boolean breedRabbits() {
+    int breedRabbits() {
         int count = 0;
         for (Burrow burrow : tunnel) {
             for (Rabbit rabbit : burrow.getCurrentRabbits()) {
