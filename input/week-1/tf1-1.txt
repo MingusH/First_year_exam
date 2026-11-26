@@ -1,4 +1,4 @@
 5
 rabbit 4
-grass 5
-burrow 2
+grass 10
+burrow 1
