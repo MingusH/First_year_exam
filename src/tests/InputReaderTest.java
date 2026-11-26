@@ -48,9 +48,10 @@ class InputReaderTest {
     void testRandomLocationStaysInsideWorld() {
         InputReader ir = new InputReader(new File("input/week-1/t1-1a.txt"));
         int size = ir.getProgram().getSize();
+        World world = new World(size);
         for (int i = 0; i < 1000; i++) {
-            Location blocking = ir.randomLocation(false);
-            Location nonBlocking = ir.randomLocation(true);
+            Location blocking = world.getRandomLocation(false);
+            Location nonBlocking = world.getRandomLocation(true);
             for (Location l : new Location[]{blocking, nonBlocking}) {
                 assertTrue(l.getX() >= 0 && l.getX() < size, "x out of bounds: " + l.getX());
                 assertTrue(l.getY() >= 0 && l.getY() < size, "y out of bounds: " + l.getY());
@@ -76,7 +77,7 @@ class InputReaderTest {
         }
 
         for (int i = 0; i < 100; i++) {
-            Location result = ir.randomLocation(true);
+            Location result = world.getRandomLocation(true);
             assertEquals(free, result);
             assertFalse(world.containsNonBlocking(result));
         }
@@ -100,7 +101,7 @@ class InputReaderTest {
         }
 
         for (int i = 0; i < 100; i++) {
-            Location result = ir.randomLocation(false);
+            Location result = world.getRandomLocation(false);
             assertEquals(free, result);
             assertTrue(world.isTileEmpty(result));
         }

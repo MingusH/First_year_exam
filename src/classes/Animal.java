@@ -79,8 +79,8 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         if(list.size()>0){
             l = list.get(random.nextInt(list.size())); // Vælger et tilfældigt tomt felt omkring kaninen
             world.move(this,l);
-            }
         }
+    }
 
     public int getAge(){
         return age;
