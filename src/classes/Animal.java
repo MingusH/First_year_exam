@@ -82,11 +82,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
             }
         }
 
+        
     public int getAge(){
         return age;
     }
 
-    
 
     @Override 
     public DisplayInformation getInformation(){

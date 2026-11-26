@@ -21,6 +21,7 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
     private int maxSize;
     private int timeEmpty;
     private ArrayList<Burrow> tunnel;
+    private Boolean rabbitBirthed;
 
     public Burrow(){
         this.rabbits = new ArrayList<>();
@@ -28,6 +29,8 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         this.maxSize = 4;
         this.timeEmpty = 0;
         this.tunnel = new ArrayList<>();
+        tunnel.add(this);
+        this.rabbitBirthed = false;
     }
 
 
@@ -39,10 +42,18 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
 
         if (world.getCurrentTime() == 0){
             releaseRabbits(world);
+            for (Burrow burrow: tunnel){
+                burrow.setBirthed(false);
+            } 
         }
 
-        if (breedRabbits() && world.getCurrentTime() == 15){
-            birthRabbit();
+        if (world.getCurrentTime() == 15 && !rabbitBirthed){
+            for (int i = 0; i < breedRabbits(); i++){
+                birthRabbit();
+            }
+            for (Burrow burrow: tunnel){
+                burrow.setBirthed(true);
+            }   
         }
 
         if (isCurrentlyFull() && world.getCurrentTime() == 19){
@@ -76,6 +87,10 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         }
 
         Location l = world.getRandomLocation(true);
+        if (l == null){
+            return;
+        }
+
         world.setTile(l, new Burrow());
         if (world.getNonBlocking(l) instanceof Burrow b){
             tunnel.add(b);
@@ -83,16 +98,16 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
         }
     }
 
-    Boolean breedRabbits(){
+    int breedRabbits(){
         int count = 0;
         for (Burrow burrow: tunnel){
             for (Rabbit rabbit: burrow.getCurrentRabbits()){
-                if (rabbit.getAge() >= 40){
+                if (rabbit.getAge() >= 20){
                     count++;
                 }
             }
         }
-        return count >= 2;
+        return count / 2;
     }
 
     void birthRabbit(){
@@ -142,6 +157,10 @@ public class Burrow implements NonBlocking, Actor, DynamicDisplayInformationProv
 
     public Boolean isFull(){
         return rabbits.size() >= maxSize;
+    }
+
+    public void setBirthed(Boolean bool){
+        this.rabbitBirthed = bool;
     }
 
     public Boolean isCurrentlyFull(){
